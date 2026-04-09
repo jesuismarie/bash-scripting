@@ -3,9 +3,9 @@
 set -euo pipefail
 
 BLUE='\033[0;34m'
-GREEN='\033[032m'
-RED='\033[031m'
-YELLOW='\033[033m'
+GREEN='\033[0;32m'
+RED='\033[0;31m'
+YELLOW='\033[0;33m'
 RESET='\033[0m'
 
 ok() { echo -e "    ${GREEN}[OK]${RESET}   $*"; }
@@ -18,7 +18,7 @@ show_uptime()
 {
 	section "Uptime"
 	up_time=$(uptime -p)
-	echo "     $up_time"
+	echo "    $up_time"
 }
 
 # --- CPU Usage ---
@@ -60,6 +60,25 @@ top_services()
 	done || true
 }
 
+# --- Load Average ---
+check_load()
+{
+	section "Load Average"
+	load1=$(awk '{print $1}' /proc/loadavg)
+	load5=$(awk '{print $2}' /proc/loadavg)
+	load15=$(awk '{print $3}' /proc/loadavg)
+
+	cpu_cores=$(nproc)
+	echo "    CPU Cores $(nproc) - 1m: $load1  5m: $load5  15m: $load15"
+	if (( $(echo "$load1 > $cpu_cores * 2" | bc -l) )); then
+		crit "System is heavily overloaded!"
+	elif (( $(echo "$load1 > $cpu_cores" | bc -l) )); then
+		warn "System load is higher than available CPU cores."
+	else
+		ok "System load is within normal limits."
+	fi
+}
+
 # --- Memory Usage ---
 check_memory()
 {
@@ -99,33 +118,11 @@ check_disk()
 	done || true
 }
 
-# --- Load Average ---
-check_load()
-{
-	section "Load Average: CPU Cores $(nproc)"
-	load1=$(awk '{print $1}' /proc/loadavg)
-	load5=$(awk '{print $2}' /proc/loadavg)
-	load15=$(awk '{print $3}' /proc/loadavg)
-
-	cpu_cores=$(nproc)
-
-	if (( $(echo "$load1 > $cpu_cores * 2" | bc -l) )); then
-		crit "System is heavily overloaded!"
-	elif (( $(echo "$load1 > $cpu_cores" | bc -l) )); then
-		warn "System load is higher than available CPU cores."
-	else
-		ok "System load is within normal limits."
-	fi
-}
-
 main()
 {
 	echo -e "${BLUE}╔═══════════════════════════════════════════════════════════════════════════╗${RESET}"
-	echo -e "${BLUE}║                            System Health Check                            ║${RESET}"
+	echo -e "${BLUE}║                 System Health Check - $(date '+%Y-%m-%d %H:%M:%S')                 ║${RESET}"
 	echo -e "${BLUE}╚═══════════════════════════════════════════════════════════════════════════╝${RESET}"
-
-	section "Date"
-	echo "     $(date '+%Y-%m-%d %H:%M:%S')"
 
 	show_uptime
 	check_cpu
