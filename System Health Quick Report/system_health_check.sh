@@ -42,20 +42,20 @@ top_services()
 {
 	section "Top 5 Processes"
 
-	cores=$(nproc)
-
-	ps -eo pid,comm,%cpu --sort=-%cpu --no-headers | head -n 5 | \
-	while read pid name cpu;
+	ps -eo comm,%cpu --no-headers |
+	awk -v cores="$(nproc)" '{ cpu[$1] += $2; count[$1]++ }
+	END { for (n in cpu) printf "%s %.1f %d\n", n, cpu[n]/cores, count[n] }' |
+	sort -k2 -nr | head -n 5 | \
+	while read name cpu num;
 	do
-		cpu_norm=$(echo "$cpu $cores" | awk '{ printf "%.1f", $1 / $2 }')
-		cpu_int=$(echo "$cpu_norm" | awk '{ printf "%d", $1 + 0.5 }')
+		cpu_int=$(printf "%.0f" "$cpu")
 
 		if [ "$cpu_int" -ge 90 ]; then
-			crit "${RED}(${cpu_norm}%)${RESET} $name, $pid"
+			crit "${RED}(${cpu}%)${RESET} $name ($num processes)"
 		elif [ "$cpu_int" -ge 75 ]; then
-			warn "${YELLOW}(${cpu_norm}%)${RESET} $name, $pid"
+			warn "${YELLOW}(${cpu}%)${RESET} $name ($num processes)"
 		else
-			ok "${GREEN}(${cpu_norm}%)${RESET} $name, $pid"
+			ok "${GREEN}(${cpu}%)${RESET} $name ($num processes)"
 		fi
 	done || true
 }
