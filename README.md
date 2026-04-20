@@ -1,15 +1,16 @@
 # Bash Scripting
 
-This repository contains **Bash scripts** I write to practice and improve my scripting skills. New scripts will be added periodically as I explore automation, system tasks, and useful utilities.
+This repository contains **Bash scripts** I develop to improve my scripting skills and build practical automation tools.
+The goal is to explore automation, system operations, and efficient workflows using Bash.
 
 ## Contents
 
-Scripts include examples for:
+The repository includes scripts related to:
 
-* System monitoring and management
 * Automation of repetitive tasks
-* Networking and security utilities
-* File and log manipulation
+* System operations and process handling
+* File and directory management
+* Basic networking and utility scripts
 
 ## How to Use
 
@@ -19,16 +20,18 @@ Scripts include examples for:
 git clone https://github.com/jesuismarie/bash-scripting
 ```
 
-2. Navigate to the scripts folder:
+2. Navigate to a script:
 
 ```bash
 cd bash-scripting/<script-name>
 ```
 
-3. Run a script:
+3. Run the script:
 
 ```bash
 bash <script-name>.sh
+# or
+./<script-name>.sh
 ```
 
 > Make sure the script is executable:
@@ -39,12 +42,12 @@ chmod +x <script-name>.sh
 
 ## Notes
 
-* Scripts are for **learning and experimentation**.
-* They may be updated or improved over time.
-* Contributions and suggestions are welcome.
+* Scripts are created for **learning and experimentation**, but aim to follow good practices
+* Code may evolve over time as I improve structure, error handling, and usability
+* Emphasis on writing clean, safe, and maintainable Bash scripts
 
 ## Future Goals
 
-* Add more scripts for practical automation
-* Explore creative and useful Bash utilities
-* Build a growing library of reusable scripts
+* Expand the collection with more advanced scripts
+* Improve robustness and consistency across scripts
+* Explore more complex automation and scripting patterns
