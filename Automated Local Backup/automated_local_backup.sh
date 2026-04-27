@@ -1,4 +1,35 @@
 #!/usr/bin/env bash
+# -----------------------------------------------------------------------------
+# Script: automated_local_backup.sh
+#
+# Description:
+#   A local backup automation script that creates compressed, timestamped
+#   archives (.tar.gz) from one or more source directories and stores them
+#   in a backup destination directory.
+#
+# Features:
+#   - Supports multiple source directories (bash array)
+#   - Creates timestamped archives in format:
+#       <dirname>_YYYY-MM-DD_HH-MM-SS.tar.gz
+#   - Verifies each archive for integrity after creation
+#   - Applies retention policy by deleting backups older than N days
+#   - Calculates and displays total backup directory size
+#   - Provides colored logging (info, success, warning, error)
+#
+# Behavior:
+#   - Skips non-existent source directories with a warning (does not crash)
+#   - Continues processing remaining sources even if one fails
+#   - Exits with code 1 if any archive creation fails
+#
+# Configuration:
+#   BACKUP_DIR      - Destination directory for backups (default: ~/backups)
+#   SOURCE_DIR      - Array of directories to back up (default: ~/Documents)
+#   RETENTION_DAYS  - Number of days to keep old backups (default: 3)
+#
+# Usage:
+#   ./automated_local_backup.sh [-d backup_dir] [-s source_dir] [-r retention_days] [-h]
+#
+# -----------------------------------------------------------------------------
 
 set -euo pipefail
 
@@ -13,15 +44,17 @@ warn() { echo -e "    ${YELLOW}[WARNING] $*${RESET}" >&2; }
 error() { echo -e "    ${RED}[ERROR] $*${RESET}" >&2; }
 info() { echo -e "${BLUE}$*${RESET}"; }
 
-USAGE="Usage: ./automated_local_backup.sh [-d backup_dir] [-s source_dir] [-r retention_days] [-h]
-    -d backup_dir      Directory to store backups (default: $HOME/backups)
-    -s source_dir      Directory to back up (can be specified multiple times, default: $HOME/Documents)
-    -r retention_days  Number of days to keep old backups (default: 3)
-    -h                 Show this help message and exit"
-
 BACKUP_DIR="$HOME/backups"
 SOURCE_DIR=()
 RETENTION_DAYS=3
+
+USAGE="Usage: ./automated_local_backup.sh [-d backup_dir] [-s source_dir] [-r retention_days] [-h]
+
+Options:
+    -d <backup_dir>      Directory to store backups (default: $HOME/backups)
+    -s <source_dir>      Directory to back up (can be specified multiple times, default: $HOME/Documents)
+    -r <retention_days>  Number of days to keep old backups (default: 3)
+    -h                   Show this help message and exit"
 
 # --- Argument options ---
 while getopts "d:s:r:h" opt; do
