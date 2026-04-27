@@ -1,4 +1,32 @@
 #!/usr/bin/env bash
+# -----------------------------------------------------------------------------
+# Script: system_health_check.sh
+#
+# Description:
+#   A system monitoring and health-check script for Linux that collects and
+#   reports real-time system metrics including CPU, memory, disk usage,
+#   load average, running processes, and uptime.
+#
+# Features:
+#   - CPU usage monitoring with warning/critical thresholds
+#   - Memory usage monitoring (used vs total)
+#   - Disk usage check across all mounted filesystems
+#   - Load average analysis compared to CPU core count
+#   - Top 5 CPU-consuming processes overview
+#   - System uptime display
+#   - Color-coded output (green=OK, yellow=WARNING, red=CRITICAL)
+#   - Timestamped logging of all results to a log file
+#
+# Behavior:
+#   - Warns or triggers critical alerts based on thresholds
+#   - Continues execution even if individual checks fail
+#   - Provides structured and readable system overview
+#
+# Output:
+#   - Human-readable terminal output with colored status
+#   - Persistent log file with timestamped entries
+#
+# -----------------------------------------------------------------------------
 
 set -euo pipefail
 
